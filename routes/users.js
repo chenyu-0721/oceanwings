@@ -14,7 +14,7 @@ const router = express.Router()
  *   get:
  *     summary: 獲取所有用戶
  *     tags:
- *       - user
+ *       - 使用者
  *     responses:
  *       200:
  *         description: 成功返回用戶列表
@@ -78,7 +78,7 @@ router.get('/', async function (req, res, next) {
  * /users/sign_up:
  *   post:
  *     summary: 用戶註冊
- *     tags: [user]
+ *     tags: [使用者]
  *     requestBody:
  *       required: true
  *       content:
@@ -179,7 +179,7 @@ router.post(
  * /users/sign_in:
  *   post:
  *     summary: 用戶登入
- *     tags: [user]
+ *     tags: [使用者]
  *     requestBody:
  *       required: true
  *       content:
@@ -241,7 +241,7 @@ router.post(
  *     summary: 添加商品到購物車
  *     description: 為已登錄用戶的購物車添加商品，如果商品已存在則更新數量
  *     tags:
- *       - Cart
+ *       - 購物車
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -349,11 +349,11 @@ router.post(
 
 /**
  * @swagger
- * /users/getCart:
+ * /users/Cart:
  *   get:
  *     summary: 獲取用戶購物車內容
  *     description: 獲取已登錄用戶的購物車內容
- *     tags: [Cart]
+ *     tags: [購物車]
  *     security:
  *       - bearerAuth: []
  *     responses:
@@ -428,7 +428,7 @@ router.get(
  *   delete:
  *     summary: 刪除購物車商品
  *     description: 從已登入使用者的購物車中刪除指定商品
- *     tags: [Cart]
+ *     tags: [購物車]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -508,7 +508,7 @@ router.delete('/cart/:itemId', isAuth, async (req, res) => {
  *   put:
  *     summary: 更新購物車商品
  *     description: 更新已登入使用者購物車中指定商品的資訊
- *     tags: [Cart]
+ *     tags: [購物車]
  *     security:
  *       - bearerAuth: []
  *     parameters:
