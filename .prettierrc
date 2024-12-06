@@ -1,0 +1,12 @@
+{
+	"bracketSameLine": false,
+	"singleAttributePerLine": false,
+	"singleQuote": true,
+	"printWidth": 600,
+	"semi": false,
+	"useTabs": true,
+	"trailingComma": "all",
+	"arrowParens": "avoid",
+	"tabWidth": 4,
+	"html.format.wrapLineLength": 0
+}
