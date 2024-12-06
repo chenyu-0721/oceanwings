@@ -347,8 +347,64 @@ router.post(
 	}),
 )
 
+/**
+ * @swagger
+ * /users/getCart:
+ *   get:
+ *     summary: 獲取用戶購物車內容
+ *     description: 獲取已登錄用戶的購物車內容
+ *     tags: [Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: 成功獲取購物車
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 cart:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       image:
+ *                         type: string
+ *                         description: 商品圖片連結
+ *                       title:
+ *                         type: string
+ *                         description: 商品標題
+ *                       price:
+ *                         type: number
+ *                         description: 商品價格
+ *                       quantity:
+ *                         type: number
+ *                         description: 商品數量
+ *       404:
+ *         description: 用戶未找到
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 找不到該用戶
+ *       500:
+ *         description: 服務器錯誤
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 服務器錯誤
+ */
+
 router.get(
-	'/getCart',
+	'/Cart',
 	isAuth,
 	handleErrorAsync(async (req, res, next) => {
 		try {
@@ -365,6 +421,57 @@ router.get(
 		}
 	}),
 )
+
+/**
+ * @swagger
+ * /users/cart/{itemId}:
+ *   delete:
+ *     summary: 刪除購物車商品
+ *     description: 從已登入使用者的購物車中刪除指定商品
+ *     tags: [Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: itemId
+ *         required: true
+ *         description: 要刪除的商品 ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: 成功刪除購物車商品
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 商品已從購物車中刪除
+ *       404:
+ *         description: 使用者或商品未找到
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   oneOf:
+ *                     - example: 找不到該用戶
+ *                     - example: 找不到該商品
+ *       500:
+ *         description: 伺服器錯誤
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 伺服器錯誤
+ */
 
 router.delete('/cart/:itemId', isAuth, async (req, res) => {
 	try {
@@ -394,6 +501,92 @@ router.delete('/cart/:itemId', isAuth, async (req, res) => {
 })
 
 // 編輯購物車資訊
+
+/**
+ * @swagger
+ * /users/cart/{itemId}:
+ *   put:
+ *     summary: 更新購物車商品
+ *     description: 更新已登入使用者購物車中指定商品的資訊
+ *     tags: [Cart]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: itemId
+ *         required: true
+ *         description: 要更新的商品 ID
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 description: 商品圖片 URL（可選）
+ *               title:
+ *                 type: string
+ *                 description: 商品標題（可選）
+ *               price:
+ *                 type: number
+ *                 description: 商品價格（可選）
+ *               quantity:
+ *                 type: number
+ *                 description: 商品數量（可選）
+ *     responses:
+ *       200:
+ *         description: 成功更新購物車商品
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: 商品資訊已更新
+ *                 cart:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       image:
+ *                         type: string
+ *                       title:
+ *                         type: string
+ *                       price:
+ *                         type: number
+ *                       quantity:
+ *                         type: number
+ *       404:
+ *         description: 使用者或商品未找到
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   oneOf:
+ *                     - example: 找不到該用戶
+ *                     - example: 找不到該商品
+ *       500:
+ *         description: 伺服器錯誤
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: 伺服器錯誤
+ */
+
 router.put(
 	'/cart/:itemId',
 	isAuth,
