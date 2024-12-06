@@ -1,12 +1,12 @@
 const express = require('express')
 const router = express.Router()
-const Post = require('../models/post.js')
+const Product = require('../models/product.js')
 const handleSuccess = require('../handleSuccess.js')
 const handleError = require('../handleError.js')
 
 /**
  * @swagger
- * /:
+ * /product:
  *   get:
  *     summary: 取得所有商品
  *     description: 獲取系統中的所有商品列表
@@ -74,9 +74,9 @@ const handleError = require('../handleError.js')
  *                   example: 取得商品失敗
  */
 
-router.get('/', async (req, res, next) => {
+router.get('/product', async (req, res, next) => {
 	try {
-		const post = await Post.find()
+		const post = await Product.find()
 		handleSuccess(res, post)
 	} catch (err) {
 		const error = '取得失敗'
@@ -84,9 +84,9 @@ router.get('/', async (req, res, next) => {
 	}
 })
 
-router.post('/', async (req, res, next) => {
+router.post('/product', async (req, res, next) => {
 	try {
-		const post = await Post.create(req.body)
+		const post = await Product.create(req.body)
 		handleSuccess(res, post)
 	} catch (err) {
 		const error = '建立失敗'
@@ -94,9 +94,9 @@ router.post('/', async (req, res, next) => {
 	}
 })
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/product/:id', async (req, res, next) => {
 	try {
-		const newpost = await Post.findByIdAndUpdate(req.params.id, req.body, {
+		const newpost = await Product.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
 		})
 		handleSuccess(res, newpost)
@@ -106,22 +106,13 @@ router.patch('/:id', async (req, res, next) => {
 	}
 })
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/product/:id', async (req, res, next) => {
 	try {
-		const delpost = await Post.findByIdAndDelete(req.params.id)
+		const delpost = await Product.findByIdAndDelete(req.params.id)
 		handleSuccess(res, delpost)
 	} catch (err) {
 		const error = '刪除單筆失敗'
 		handleError(res, error)
-	}
-})
-
-router.delete('/', async function (req, res, next) {
-	try {
-		await Post.deleteMany({})
-		handleSuccess(res, null)
-	} catch (err) {
-		handleError(res, err, '刪除所有貼文資料失敗')
 	}
 })
 
