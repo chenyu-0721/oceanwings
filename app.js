@@ -64,7 +64,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 // 路由
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
-app.use('/posts', productsRouter)
+app.use('/product', productsRouter)
 
 // Swagger UI 路由
 app.use('/swagger/index.html', swaggerUi.serve, swaggerUi.setup(swaggerSpec))

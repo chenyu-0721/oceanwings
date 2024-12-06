@@ -74,17 +74,35 @@ const handleError = require('../handleError.js')
  *                   example: 取得商品失敗
  */
 
-router.get('/product', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
 	try {
-		const post = await Product.find()
-		handleSuccess(res, post)
+		const page = parseInt(req.query.page) || 1
+		const limit = parseInt(req.query.limit) || 10
+
+		const skip = (page - 1) * limit
+
+		const totalItems = await Product.countDocuments()
+
+		const products = await Product.find().skip(skip).limit(limit)
+
+		const totalPages = Math.ceil(totalItems / limit)
+
+		const responseData = {
+			data: products,
+			meta: {
+				totalItems,
+				totalPages,
+				currentPage: page,
+			},
+		}
+
+		handleSuccess(res, responseData)
 	} catch (err) {
-		const error = '取得失敗'
-		handleError(res, error)
+		handleError(res, '取得商品失敗')
 	}
 })
 
-router.post('/product', async (req, res, next) => {
+router.post('/', async (req, res, next) => {
 	try {
 		const post = await Product.create(req.body)
 		handleSuccess(res, post)
@@ -94,7 +112,7 @@ router.post('/product', async (req, res, next) => {
 	}
 })
 
-router.patch('/product/:id', async (req, res, next) => {
+router.patch('/:id', async (req, res, next) => {
 	try {
 		const newpost = await Product.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
@@ -106,7 +124,7 @@ router.patch('/product/:id', async (req, res, next) => {
 	}
 })
 
-router.delete('/product/:id', async (req, res, next) => {
+router.delete('/:id', async (req, res, next) => {
 	try {
 		const delpost = await Product.findByIdAndDelete(req.params.id)
 		handleSuccess(res, delpost)
