@@ -291,7 +291,7 @@ router.post(
  *               properties:
  *                 error:
  *                   type: string
- *                   example: "找不到該用戶"
+ *                   example: "使用者尚未登入"
  *       500:
  *         description: 伺服器錯誤
  *         content:
@@ -314,7 +314,7 @@ router.post(
 			const user = await User.findById(req.user.id)
 
 			if (!user) {
-				return res.status(404).json({ error: '找不到該用戶' })
+				return res.status(404).json({ error: '使用者尚未登入' })
 			}
 
 			// 查找是否已有同名商品
@@ -390,7 +390,7 @@ router.post(
  *               properties:
  *                 error:
  *                   type: string
- *                   example: 找不到該用戶
+ *                   example: 使用者尚未登入
  *       500:
  *         description: 服務器錯誤
  *         content:
@@ -411,7 +411,7 @@ router.get(
 			const user = await User.findById(req.user.id)
 
 			if (!user) {
-				return res.status(404).json({ error: '找不到該用戶' })
+				return res.status(404).json({ error: '使用者尚未登入' })
 			}
 
 			res.status(200).json({ cart: user.cart })
@@ -450,7 +450,7 @@ router.get(
  *                   type: string
  *                   example: 商品已從購物車中刪除
  *       404:
- *         description: 使用者或商品未找到
+ *         description: 使用者尚未登入
  *         content:
  *           application/json:
  *             schema:
@@ -459,7 +459,7 @@ router.get(
  *                 error:
  *                   type: string
  *                   oneOf:
- *                     - example: 找不到該用戶
+ *                     - example: 使用者尚未登入
  *                     - example: 找不到該商品
  *       500:
  *         description: 伺服器錯誤
@@ -481,7 +481,7 @@ router.delete('/cart/:id', isAuth, async (req, res) => {
 		const user = await User.findById(userId)
 
 		if (!user) {
-			return res.status(404).json({ error: '找不到該用戶' })
+			return res.status(404).json({ error: '使用者尚未登入' })
 		}
 
 		const itemIndex = user.cart.findIndex(item => item._id.toString() === id)
@@ -564,7 +564,7 @@ router.delete('/cart/:id', isAuth, async (req, res) => {
  *                       quantity:
  *                         type: number
  *       404:
- *         description: 使用者或商品未找到
+ *         description: 使用者尚未登入
  *         content:
  *           application/json:
  *             schema:
@@ -573,7 +573,7 @@ router.delete('/cart/:id', isAuth, async (req, res) => {
  *                 error:
  *                   type: string
  *                   oneOf:
- *                     - example: 找不到該用戶
+ *                     - example: 使用者尚未登入
  *                     - example: 找不到該商品
  *       500:
  *         description: 伺服器錯誤
@@ -598,7 +598,7 @@ router.put(
 			const user = await User.findById(req.user.id)
 
 			if (!user) {
-				return res.status(404).json({ error: '找不到該用戶' })
+				return res.status(404).json({ error: '使用者尚未登入' })
 			}
 
 			const item = user.cart.find(item => item._id.toString() === id)
