@@ -424,7 +424,7 @@ router.get(
 
 /**
  * @swagger
- * /users/cart/{itemId}:
+ * /users/cart/{id}:
  *   delete:
  *     summary: 刪除購物車商品
  *     description: 從已登入使用者的購物車中刪除指定商品
@@ -433,7 +433,7 @@ router.get(
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: itemId
+ *         name: id
  *         required: true
  *         description: 要刪除的商品 ID
  *         schema:
@@ -473,10 +473,10 @@ router.get(
  *                   example: 伺服器錯誤
  */
 
-router.delete('/cart/:itemId', isAuth, async (req, res) => {
+router.delete('/cart/:id', isAuth, async (req, res) => {
 	try {
 		const userId = req.user.id
-		const itemId = req.params.itemId
+		const id = req.params.id
 
 		const user = await User.findById(userId)
 
@@ -484,7 +484,7 @@ router.delete('/cart/:itemId', isAuth, async (req, res) => {
 			return res.status(404).json({ error: '找不到該用戶' })
 		}
 
-		const itemIndex = user.cart.findIndex(item => item._id.toString() === itemId)
+		const itemIndex = user.cart.findIndex(item => item._id.toString() === id)
 
 		if (itemIndex === -1) {
 			return res.status(404).json({ error: '找不到該商品' })
@@ -504,7 +504,7 @@ router.delete('/cart/:itemId', isAuth, async (req, res) => {
 
 /**
  * @swagger
- * /users/cart/{itemId}:
+ * /users/cart/{id}:
  *   put:
  *     summary: 更新購物車商品
  *     description: 更新已登入使用者購物車中指定商品的資訊
@@ -513,7 +513,7 @@ router.delete('/cart/:itemId', isAuth, async (req, res) => {
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: itemId
+ *         name: id
  *         required: true
  *         description: 要更新的商品 ID
  *         schema:
@@ -588,11 +588,11 @@ router.delete('/cart/:itemId', isAuth, async (req, res) => {
  */
 
 router.put(
-	'/cart/:itemId',
+	'/cart/:id',
 	isAuth,
 	handleErrorAsync(async (req, res, next) => {
 		const { image, title, price, quantity } = req.body
-		const itemId = req.params.itemId
+		const id = req.params.id
 
 		try {
 			const user = await User.findById(req.user.id)
@@ -601,7 +601,7 @@ router.put(
 				return res.status(404).json({ error: '找不到該用戶' })
 			}
 
-			const item = user.cart.find(item => item._id.toString() === itemId)
+			const item = user.cart.find(item => item._id.toString() === id)
 
 			if (!item) {
 				return res.status(404).json({ error: '找不到該商品' })
