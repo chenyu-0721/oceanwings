@@ -9,7 +9,7 @@
 		"/product": {
 			"get": {
 				"summary": "取得所有商品",
-				"description": "獲取系統中的所有商品列表",
+				"description": "獲取系統中的所有商品列表 [商品](https://oceanwings.onrender.com/product)",
 				"tags": ["商品"],
 				"parameters": [
 					{
@@ -564,6 +564,7 @@
 			"get": {
 				"summary": "獲取所有用戶",
 				"tags": ["使用者"],
+				"description": "[使用者](https://oceanwings.onrender.com/users)",
 				"responses": {
 					"200": {
 						"description": "成功返回用戶列表",
@@ -836,7 +837,7 @@
 		"/users/cart": {
 			"get": {
 				"summary": "獲取用戶購物車內容",
-				"description": "獲取已登錄用戶的購物車內容",
+				"description": "獲取已登錄用戶的購物車內容 [購物車](https://oceanwings.onrender.com/cart)",
 				"tags": ["購物車"],
 				"security": [
 					{
