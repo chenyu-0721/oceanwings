@@ -46,7 +46,7 @@ const swaggerOptions = {
 			},
 		],
 	},
-	apis: ['./routes/*.js'], // 指定包含 API 路由的文件
+	apis: ['./swagger/*.js'], // 指定包含 API 路由的文件
 }
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions)
