@@ -66,12 +66,11 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 // 路由
-app.use('/', indexRouter)
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 app.use('/users', usersRouter)
 app.use('/product', productsRouter)
 
 // Swagger UI 路由
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // 404 處理
 app.use(function (req, res, next) {
