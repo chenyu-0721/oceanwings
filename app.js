@@ -7,11 +7,10 @@ var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
 var productsRouter = require('./routes/product')
 
-const swaggerDocument = require('./swagger/swagger.json')
+const swaggerDocument = require('./docs/swagger/swagger.json')
 
 // Swagger 相關
 const swaggerUi = require('swagger-ui-express')
-const swaggerJsdoc = require('swagger-jsdoc')
 
 const port = process.env.PORT || 4000
 var app = express()
