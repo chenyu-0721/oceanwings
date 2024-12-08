@@ -26,6 +26,33 @@ router.get('/', async function (req, res, next) {
 	}
 })
 
+router.delete('/:id', async function (req, res, next) {
+	try {
+		const userId = req.params.id
+
+		const user = await User.findById(userId)
+		if (!user) {
+			return res.status(404).json({
+				status: 'error',
+				message: '找不到指定的使用者',
+			})
+		}
+
+		await User.findByIdAndDelete(userId)
+
+		res.status(200).json({
+			status: 'success',
+			message: '使用者刪除成功',
+		})
+	} catch (error) {
+		res.status(500).json({
+			status: 'error',
+			message: '無法刪除使用者',
+			error: error.message,
+		})
+	}
+})
+
 router.post(
 	'/sign_up',
 	handleErrorAsync(async (req, res, next) => {

@@ -43,6 +43,65 @@
 
 /**
  * @swagger
+ * /users/{id}:
+ *   delete:
+ *     summary: 刪除指定使用者
+ *     description: 根據使用者ID刪除特定使用者帳號
+ *     tags: [使用者]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: 要刪除的使用者ID
+ *     responses:
+ *       200:
+ *         description: 使用者成功刪除
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 message:
+ *                   type: string
+ *                   example: 使用者刪除成功
+ *       404:
+ *         description: 找不到指定的使用者
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 找不到指定的使用者
+ *       500:
+ *         description: 伺服器內部錯誤
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: error
+ *                 message:
+ *                   type: string
+ *                   example: 無法刪除使用者
+ *                 error:
+ *                   type: string
+ *                   description: 錯誤詳細信息
+ */
+
+/**
+ * @swagger
  * /users/sign_up:
  *   post:
  *     summary: 用戶註冊

@@ -6,6 +6,7 @@ var logger = require('morgan')
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
 var productsRouter = require('./routes/product')
+var cors = require('cors')
 
 // Swagger 相關
 const swaggerUi = require('swagger-ui-express')
@@ -13,14 +14,6 @@ const swaggerJsdoc = require('swagger-jsdoc')
 
 const port = process.env.PORT || 4000
 var app = express()
-
-// CORS 中間件
-app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', '*')
-	res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH')
-	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
-	next()
-})
 
 // Mongoose 連接
 const dotenv = require('dotenv')
@@ -30,6 +23,51 @@ dotenv.config({ path: './config.env' })
 const DB = process.env.DATABASE.replace('<password>', process.env.DATABASE_PASSWORD)
 
 mongoose.connect(DB).then(() => console.log('資料庫連接成功'))
+
+// cors
+const corsOptions = {
+	origin: function (origin, callback) {
+		// 定義允許的來源
+		const allowedOrigins = [
+			'http://localhost:5173', // React 預設端口
+			'https://yourdomain.com', // 正式域名
+			undefined, // 允許無來源的請求（如 Postman）
+		]
+
+		if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+			callback(null, true)
+		} else {
+			// 拒絕未授權的來源
+			callback(new Error('Not allowed by CORS'))
+		}
+	},
+	methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+	credentials: true,
+	optionsSuccessStatus: 200,
+	maxAge: 3600,
+}
+
+app.use((req, res, next) => {
+	const cors = require('cors')(corsOptions)
+
+	cors(req, res, err => {
+		if (err) {
+			console.error('CORS Error:', {
+				origin: req.get('origin'),
+				method: req.method,
+				errorMessage: err.message,
+			})
+
+			return res.status(403).json({
+				status: 'error',
+				message: 'Cross-Origin Request Blocked',
+				details: 'The request origin is not allowed by CORS policy',
+			})
+		}
+		next()
+	})
+})
 
 // Swagger 配置
 const swaggerOptions = {
