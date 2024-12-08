@@ -1,7 +1,7 @@
 {
 	"openapi": "3.0.0",
 	"info": {
-		"title": "API Documentation",
+		"title": "OceanWings API",
 		"description": "API documentation for the product service",
 		"version": "1.0.0"
 	},
