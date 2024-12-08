@@ -6,7 +6,8 @@ var logger = require('morgan')
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
 var productsRouter = require('./routes/product')
-var cors = require('cors')
+
+const swaggerDocument = require('./swagger/swagger.json')
 
 // Swagger 相關
 const swaggerUi = require('swagger-ui-express')
@@ -26,21 +27,7 @@ mongoose.connect(DB).then(() => console.log('資料庫連接成功'))
 
 // cors
 const corsOptions = {
-	origin: function (origin, callback) {
-		// 定義允許的來源
-		const allowedOrigins = [
-			'http://localhost:5173', // React 預設端口
-			'https://yourdomain.com', // 正式域名
-			undefined, // 允許無來源的請求（如 Postman）
-		]
-
-		if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-			callback(null, true)
-		} else {
-			// 拒絕未授權的來源
-			callback(new Error('Not allowed by CORS'))
-		}
-	},
+	origin: '*',
 	methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 	credentials: true,
@@ -105,7 +92,7 @@ app.use('/users', usersRouter)
 app.use('/product', productsRouter)
 
 // Swagger UI 路由
-app.use('/swagger/index.html', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use('/swagger/index.html', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // 404 處理
 app.use(function (req, res, next) {
