@@ -11,7 +11,6 @@ const swaggerDocument = require('./swagger/swagger.json')
 
 // Swagger 相關
 const swaggerUi = require('swagger-ui-express')
-const swaggerJsdoc = require('swagger-jsdoc')
 
 const port = process.env.PORT || 4000
 var app = express()
@@ -72,7 +71,7 @@ app.use('/users', usersRouter)
 app.use('/product', productsRouter)
 
 // Swagger UI 路由
-app.use('/swagger/index.html', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // 404 處理
 app.use(function (req, res, next) {
