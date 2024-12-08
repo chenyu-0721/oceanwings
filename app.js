@@ -56,26 +56,6 @@ app.use((req, res, next) => {
 	})
 })
 
-// Swagger 配置
-const swaggerOptions = {
-	definition: {
-		openapi: '3.0.0',
-		info: {
-			title: 'Ocean-Wings',
-			version: '1.0.0',
-			description: 'API 文件',
-		},
-		servers: [
-			{
-				url: `http://localhost:${port}`,
-			},
-		],
-	},
-	apis: ['./swagger/*.js'], // 指定包含 API 路由的文件
-}
-
-const swaggerSpec = swaggerJsdoc(swaggerOptions)
-
 // 視圖引擎設置
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
