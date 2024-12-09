@@ -294,8 +294,10 @@
 						}
 					}
 				}
-			},
-			"patch": {
+			}
+		},
+		"/product/{id}": {
+			"post": {
 				"summary": "更新特定商品",
 				"description": "根據商品ID更新商品資訊",
 				"tags": ["商品"],
@@ -465,9 +467,7 @@
 						}
 					}
 				}
-			}
-		},
-		"/product/{id}": {
+			},
 			"delete": {
 				"summary": "刪除特定商品",
 				"description": "根據商品ID刪除單一商品",
