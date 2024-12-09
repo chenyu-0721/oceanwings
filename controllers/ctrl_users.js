@@ -51,63 +51,59 @@ exports.deleteUser = async (req, res, next) => {
 	}
 }
 
-exports.sign_up = async (req, res, next) => {
-	handleErrorAsync(async (req, res, next) => {
-		let { email, password, confirmPassword, name } = req.body
+exports.sign_up = handleErrorAsync(async (req, res, next) => {
+	let { email, password, confirmPassword, name } = req.body
 
-		if (!email || !password || !confirmPassword || !name) {
-			return next(appError(400, '請填寫所有必填', next))
+	if (!email || !password || !confirmPassword || !name) {
+		return next(appError(400, '請填寫所有必填', next))
+	}
+
+	if (password !== confirmPassword) {
+		return next(appError(400, '密碼不一制', next))
+	}
+
+	if (!validator.isLength(password, { min: 8 })) {
+		return next(appError(400, '密碼長度需大於8位數', next))
+	}
+
+	if (!validator.isEmail(email)) {
+		return next(appError(400, 'Email 格是不正確', next))
+	}
+
+	try {
+		const existingUser = await User.findOne({ email })
+		if (existingUser) {
+			return next(appError(400, '該 Email 已被註冊', next))
 		}
 
-		if (password !== confirmPassword) {
-			return next(appError(400, '密碼不一制', next))
-		}
+		const hashedPassword = await bcrypt.hash(password, 12)
 
-		if (!validator.isLength(password, { min: 8 })) {
-			return next(appError(400, '密碼長度需大於8位數', next))
-		}
+		const newUser = await User.create({
+			email,
+			password: hashedPassword,
+			name,
+			role: 'user',
+			cart: [],
+		})
 
-		if (!validator.isEmail(email)) {
-			return next(appError(400, 'Email 格是不正確', next))
-		}
+		generateSendJWT(newUser, 201, res)
+	} catch (error) {
+		return next(appError(500, '註冊失敗，請稍後在試', next))
+	}
+})
 
-		try {
-			const existingUser = await User.findOne({ email })
-			if (existingUser) {
-				return next(appError(400, '該 Email 已被註冊', next))
-			}
-
-			const hashedPassword = await bcrypt.hash(password, 12)
-
-			const newUser = await User.create({
-				email,
-				password: hashedPassword,
-				name,
-				role: 'user',
-				cart: [],
-			})
-
-			generateSendJWT(newUser, 201, res)
-		} catch (error) {
-			return next(appError(500, '註冊失敗，請稍後在試', next))
-		}
-	})
-}
-
-exports.sign_in = async (req, res, next) => {
-	handleErrorAsync(async (req, res, next) => {
-		const { email, password } = req.body
-		if (!email || !password) {
-			return next(appError(400, '帳號密碼不可為空', next))
-		}
-		const user = await User.findOne({ email }).select('+password')
-		const auth = await bcrypt.compare(password, user.password)
-		if (!auth) {
-			return next(appError(400, '您的密碼不正確', next))
-		}
-		generateSendJWT(user, 200, res)
-	})
-}
+exports.sign_in = handleErrorAsync(async (req, res, next) => {
+	const { email, password } = req.body
+	if (!email || !password) {
+		return next(appError(400, '帳號密碼不可為空', next))
+	}
+	const user = await User.findOne({ email }).select('+password')
+	const auth = await bcrypt.compare(password, user.password)
+	if (!auth) {
+		return next(appError(400, '您的密碼不正確', next))
+	}
+	generateSendJWT(user, 200, res)
+})
 
 exports.addcart = async (req, res, next) => {
 	handleErrorAsync(async (req, res, next) => {
