@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const product_controllers = require('../controllers/crtl_product.js')
+const ctrl_product = require('../controllers/ctrl_product')
 
-router.get('/', product_controllers.getProducts)
+router.get('/', ctrl_product.getProducts)
 
-router.post('/', product_controllers.addProduct)
+router.post('/', ctrl_product.addProduct)
 
-router.patch('/:id', product_controllers.editProduct)
+router.patch('/:id', ctrl_product.editProduct)
 
-router.delete('/:id', product_controllers.deleteProduct)
+router.delete('/:id', ctrl_product.deleteProduct)
 
 module.exports = router

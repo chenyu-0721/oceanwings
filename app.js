@@ -6,6 +6,7 @@ var logger = require('morgan')
 var indexRouter = require('./routes/index')
 var usersRouter = require('./routes/users')
 var productsRouter = require('./routes/product')
+var cartRouter = require('./routes/cart')
 
 const swaggerDocument = require('./swagger/swagger.json')
 
@@ -68,7 +69,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 // 定義其他路由
 app.use('/users', usersRouter)
 app.use('/product', productsRouter)
-
+app.use('/cart', cartRouter)
 // 路由
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 

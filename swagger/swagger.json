@@ -834,10 +834,10 @@
 				}
 			}
 		},
-		"/users/cart": {
+		"/cart": {
 			"get": {
-				"summary": "獲取用戶購物車內容",
-				"description": "獲取已登錄用戶的購物車內容 [購物車](https://oceanwings.onrender.com/cart)",
+				"summary": "取得使用者購物車內容",
+				"description": "取得當前登入用戶的購物車資料",
 				"tags": ["購物車"],
 				"security": [
 					{
@@ -846,32 +846,37 @@
 				],
 				"responses": {
 					"200": {
-						"description": "成功獲取購物車",
+						"description": "成功取得購物車內容",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "object",
 									"properties": {
-										"cart": {
-											"type": "array",
-											"items": {
-												"type": "object",
-												"properties": {
-													"image": {
-														"type": "string",
-														"description": "商品圖片連結"
-													},
-													"title": {
-														"type": "string",
-														"description": "商品標題"
-													},
-													"price": {
-														"type": "number",
-														"description": "商品價格"
-													},
-													"quantity": {
-														"type": "number",
-														"description": "商品數量"
+										"data": {
+											"type": "object",
+											"properties": {
+												"_id": {
+													"type": "string",
+													"description": "購物車 ID"
+												},
+												"userId": {
+													"type": "string",
+													"description": "用戶 ID"
+												},
+												"products": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"productId": {
+																"type": "string",
+																"description": "商品 ID"
+															},
+															"quantity": {
+																"type": "integer",
+																"description": "商品數量"
+															}
+														}
 													}
 												}
 											}
@@ -882,15 +887,19 @@
 						}
 					},
 					"404": {
-						"description": "用戶未找到",
+						"description": "找不到購物車或購物車為空",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "object",
 									"properties": {
-										"error": {
+										"status": {
 											"type": "string",
-											"example": "使用者尚未登入"
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "購物車為空或未找到"
 										}
 									}
 								}
@@ -898,15 +907,19 @@
 						}
 					},
 					"500": {
-						"description": "服務器錯誤",
+						"description": "伺服器錯誤",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "object",
 									"properties": {
-										"error": {
+										"status": {
 											"type": "string",
-											"example": "服務器錯誤"
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "取得購物車失敗"
 										}
 									}
 								}
@@ -916,8 +929,8 @@
 				}
 			},
 			"post": {
-				"summary": "添加商品到購物車",
-				"description": "為已登錄用戶的購物車添加商品，如果商品已存在則更新數量",
+				"summary": "新增商品至購物車",
+				"description": "將指定商品加入當前用戶的購物車中，若商品已存在則增加數量",
 				"tags": ["購物車"],
 				"security": [
 					{
@@ -930,244 +943,59 @@
 						"application/json": {
 							"schema": {
 								"type": "object",
-								"required": ["title", "price"],
 								"properties": {
-									"image": {
+									"productId": {
 										"type": "string",
-										"description": "商品圖片URL",
-										"example": "https://example.com/product-image.jpg"
-									},
-									"title": {
-										"type": "string",
-										"description": "商品名稱",
-										"example": "智能手錶"
-									},
-									"price": {
-										"type": "number",
-										"description": "商品單價",
-										"example": 199.99
+										"description": "商品 ID"
 									},
 									"quantity": {
-										"type": "number",
-										"description": "商品數量（默認為1）",
-										"default": 1,
-										"example": 2
+										"type": "integer",
+										"description": "商品數量",
+										"minimum": 1
 									}
-								}
+								},
+								"required": ["productId", "quantity"]
 							}
 						}
 					}
 				},
 				"responses": {
 					"200": {
-						"description": "成功添加商品到購物車",
+						"description": "成功新增商品至購物車",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "object",
 									"properties": {
-										"message": {
+										"status": {
 											"type": "string",
-											"example": "商品已添加到購物車"
-										}
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "用戶未找到",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"error": {
-											"type": "string",
-											"example": "使用者尚未登入"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "伺服器錯誤",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"error": {
-											"type": "string",
-											"example": "伺服器錯誤"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
-		"/users/cart/{id}": {
-			"delete": {
-				"summary": "刪除購物車商品",
-				"description": "從已登入使用者的購物車中刪除指定商品",
-				"tags": ["購物車"],
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"description": "要刪除的商品 ID",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "成功刪除購物車商品",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"message": {
-											"type": "string",
-											"example": "商品已從購物車中刪除"
-										}
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "使用者尚未登入",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"error": {
-											"type": "string",
-											"oneOf": [
-												{
-													"example": "使用者尚未登入"
-												},
-												{
-													"example": "找不到該商品"
-												}
-											]
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "伺服器錯誤",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"error": {
-											"type": "string",
-											"example": "伺服器錯誤"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			},
-			"put": {
-				"summary": "更新購物車商品",
-				"description": "更新已登入使用者購物車中指定商品的資訊",
-				"tags": ["購物車"],
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"description": "要更新的商品 ID",
-						"schema": {
-							"type": "string"
-						}
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"image": {
-										"type": "string",
-										"description": "商品圖片 URL（可選）"
-									},
-									"title": {
-										"type": "string",
-										"description": "商品標題（可選）"
-									},
-									"price": {
-										"type": "number",
-										"description": "商品價格（可選）"
-									},
-									"quantity": {
-										"type": "number",
-										"description": "商品數量（可選）"
-									}
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "成功更新購物車商品",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"message": {
-											"type": "string",
-											"example": "商品資訊已更新"
+											"example": "success"
 										},
-										"cart": {
-											"type": "array",
-											"items": {
-												"type": "object",
-												"properties": {
-													"_id": {
-														"type": "string"
-													},
-													"image": {
-														"type": "string"
-													},
-													"title": {
-														"type": "string"
-													},
-													"price": {
-														"type": "number"
-													},
-													"quantity": {
-														"type": "number"
+										"data": {
+											"type": "object",
+											"properties": {
+												"_id": {
+													"type": "string",
+													"description": "購物車 ID"
+												},
+												"userId": {
+													"type": "string",
+													"description": "用戶 ID"
+												},
+												"products": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"productId": {
+																"type": "string",
+																"description": "商品 ID"
+															},
+															"quantity": {
+																"type": "integer",
+																"description": "商品數量"
+															}
+														}
 													}
 												}
 											}
@@ -1177,23 +1005,40 @@
 							}
 						}
 					},
-					"404": {
-						"description": "使用者尚未登入",
+					"400": {
+						"description": "請求錯誤，可能是商品數量小於 1 或商品不存在",
 						"content": {
 							"application/json": {
 								"schema": {
 									"type": "object",
 									"properties": {
-										"error": {
+										"status": {
 											"type": "string",
-											"oneOf": [
-												{
-													"example": "使用者尚未登入"
-												},
-												{
-													"example": "找不到該商品"
-												}
-											]
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "數量必須大於 0"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "未找到商品或購物車",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "商品不存在"
 										}
 									}
 								}
@@ -1207,9 +1052,283 @@
 								"schema": {
 									"type": "object",
 									"properties": {
-										"error": {
+										"status": {
 											"type": "string",
-											"example": "伺服器錯誤"
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "新增商品至購物車失敗"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/cart/{id}": {
+			"put": {
+				"summary": "更新購物車商品數量",
+				"description": "更新購物車中某個商品的數量，若商品不存在則新增商品至購物車",
+				"tags": ["購物車"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"productId": {
+										"type": "string",
+										"description": "商品 ID"
+									},
+									"quantity": {
+										"type": "integer",
+										"description": "商品數量",
+										"minimum": 1
+									}
+								},
+								"required": ["productId", "quantity"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "成功更新購物車",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "success"
+										},
+										"data": {
+											"type": "object",
+											"properties": {
+												"_id": {
+													"type": "string",
+													"description": "購物車 ID"
+												},
+												"userId": {
+													"type": "string",
+													"description": "用戶 ID"
+												},
+												"products": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"productId": {
+																"type": "string",
+																"description": "商品 ID"
+															},
+															"quantity": {
+																"type": "integer",
+																"description": "商品數量"
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "請求錯誤，可能是商品數量小於 1 或商品不存在",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "數量必須大於 0"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "未找到商品或購物車",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "商品不存在"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "更新購物車失敗"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "從購物車中刪除商品",
+				"description": "從用戶的購物車中刪除指定的商品",
+				"tags": ["購物車"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "productId",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"description": "商品的唯一標識符"
+						},
+						"description": "需要刪除的商品 ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "成功刪除商品",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "success"
+										},
+										"data": {
+											"type": "object",
+											"properties": {
+												"_id": {
+													"type": "string",
+													"description": "購物車 ID"
+												},
+												"userId": {
+													"type": "string",
+													"description": "用戶 ID"
+												},
+												"products": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"productId": {
+																"type": "string",
+																"description": "商品 ID"
+															},
+															"quantity": {
+																"type": "integer",
+																"description": "商品數量"
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "請求錯誤，可能是商品不在購物車中",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "商品不在購物車中"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "未找到購物車",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "購物車不存在"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "刪除商品失敗"
 										}
 									}
 								}

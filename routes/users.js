@@ -11,12 +11,12 @@ router.post('/sign_up', ctrl_users.sign_up)
 
 router.post('/sign_in', ctrl_users.sign_in)
 
-router.get('/Cart', isAuth, ctrl_users.getcart)
+// router.get('/Cart', isAuth, ctrl_users.getcart)
 
-router.post('/cart', isAuth, ctrl_users.addcart)
+// router.post('/cart', isAuth, ctrl_users.addcart)
 
-router.delete('/cart/:id', isAuth, ctrl_users.deleteCart)
+// router.delete('/cart/:id', isAuth, ctrl_users.deleteCart)
 
-router.put('/cart/:id', isAuth, ctrl_users.updateCart)
+// router.put('/cart/:id', isAuth, ctrl_users.updateCart)
 
 module.exports = router

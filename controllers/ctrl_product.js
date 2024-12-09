@@ -1,4 +1,4 @@
-const Product = require('../models/product')
+const Product = require('../models/product.js')
 const handleSuccess = require('../handleSuccess.js')
 const handleError = require('../handleError.js')
 

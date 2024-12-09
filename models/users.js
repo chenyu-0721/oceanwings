@@ -28,14 +28,6 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		default: 'user',
 	},
-	cart: [
-		{
-			image: String,
-			title: String,
-			price: Number,
-			quantity: Number,
-		},
-	],
 })
 
 const User = mongoose.model('user', userSchema)
