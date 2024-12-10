@@ -5,7 +5,7 @@ const handleError = require('../handleError')
 
 exports.getCart = async (req, res, next) => {
 	try {
-		const userId = req.user._id // 假設您使用 JWT 驗證並已經在 req.user 中設置了當前用戶
+		const userId = req.user._id
 		const cart = await Cart.findOne({ userId }).populate('products.productId')
 
 		if (!cart) {
@@ -20,9 +20,8 @@ exports.getCart = async (req, res, next) => {
 
 exports.addItemToCart = async (req, res, next) => {
 	try {
-		const userId = req.user._id // 假設您使用 JWT 驗證並已經在 req.user 中設置了當前用戶
-		const { productId, quantity } = req.body // 取得請求中的 productId 和 quantity
-		console.log(productId, quantity)
+		const userId = req.user._id
+		const { productId, quantity } = req.body
 
 		if (quantity <= 0) {
 			return handleError(res, '數量必須大於 0')
@@ -34,10 +33,14 @@ exports.addItemToCart = async (req, res, next) => {
 			return handleError(res, '商品不存在')
 		}
 
+		// 檢查是否有足夠的庫存
+		if (product.quantity < quantity) {
+			return handleError(res, '庫存不足')
+		}
+
 		let cart = await Cart.findOne({ userId })
 
 		if (!cart) {
-			// 如果用戶沒有購物車，創建一個新的購物車
 			cart = new Cart({
 				userId,
 				products: [
@@ -48,14 +51,19 @@ exports.addItemToCart = async (req, res, next) => {
 				],
 			})
 		} else {
-			// 檢查商品是否已經在購物車中
 			const productIndex = cart.products.findIndex(item => item.productId.toString() === productId.toString())
 
 			if (productIndex > -1) {
-				// 如果商品已經存在於購物車，更新數量
-				cart.products[productIndex].quantity += quantity // 增加數量
+				// 如果商品已經存在於購物車，計算新的總數量
+				const newQuantity = cart.products[productIndex].quantity + quantity
+
+				// 再次檢查總數量是否超過庫存
+				if (product.stock < newQuantity) {
+					return handleError(res, '超過可用庫存')
+				}
+
+				cart.products[productIndex].quantity = newQuantity
 			} else {
-				// 如果商品不在購物車中，將其新增到購物車
 				cart.products.push({
 					productId,
 					quantity,
@@ -63,20 +71,23 @@ exports.addItemToCart = async (req, res, next) => {
 			}
 		}
 
+		// 減少商品庫存
+		product.quantity -= quantity
+		await product.save()
+
 		// 保存或更新購物車
 		await cart.save()
 
 		handleSuccess(res, cart)
 	} catch (err) {
 		console.log(err)
-
 		handleError(res, '新增商品至購物車失敗')
 	}
 }
 
 exports.updateCart = async (req, res, next) => {
 	try {
-		const userId = req.user._id // 假設您使用 JWT 驗證並已經在 req.user 中設置了當前用戶
+		const userId = req.user._id
 		const { productId, quantity } = req.body // 取得請求中的 productId 和 quantity
 
 		if (quantity <= 0) {
@@ -128,7 +139,7 @@ exports.updateCart = async (req, res, next) => {
 
 exports.deleteItemFromCart = async (req, res, next) => {
 	try {
-		const userId = req.user._id // 假設您使用 JWT 驗證並已經在 req.user 中設置了當前用戶
+		const userId = req.user._id
 		const { productId } = req.params // 從請求路徑中取得 productId
 
 		const cart = await Cart.findOne({ userId })

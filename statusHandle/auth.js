@@ -15,7 +15,7 @@ const generateSendJWT = (user, statusCode, res) => {
 	res.cookie('jwt', token, {
 		expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
 		httpOnly: true, // 防止 XSS 攻擊
-		secure: process.env.NODE_ENV === 'production', // 僅在 HTTPS 下傳輸
+		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'strict', // 防止 CSRF 攻擊
 	})
 
