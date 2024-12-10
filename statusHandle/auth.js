@@ -12,7 +12,7 @@ const generateSendJWT = (user, statusCode, res) => {
 	})
 
 	// 設置 HTTP-only cookie
-	res.cookie('jwt', token, {
+	res.cookie('JWT', token, {
 		expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
 		httpOnly: true, // 防止 XSS 攻擊
 		secure: process.env.NODE_ENV === 'production',

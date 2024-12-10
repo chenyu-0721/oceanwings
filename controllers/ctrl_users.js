@@ -4,6 +4,7 @@ const validator = require('validator')
 const bcrypt = require('bcryptjs')
 const appError = require('../statusHandle/appError')
 const handleErrorAsync = require('../statusHandle/handleErrorAsync')
+const handleSuccess = require('../handleSuccess.js')
 const { generateSendJWT } = require('../statusHandle/auth')
 
 exports.getUser = async (req, res, next) => {
@@ -55,25 +56,25 @@ exports.sign_up = handleErrorAsync(async (req, res, next) => {
 	let { email, password, confirmPassword, name } = req.body
 
 	if (!email || !password || !confirmPassword || !name) {
-		return next(appError(400, '請填寫所有必填', next))
+		return next(appError(400, '請填寫所有必填欄位', next))
 	}
 
 	if (password !== confirmPassword) {
-		return next(appError(400, '密碼不一制', next))
+		return next(appError(400, '兩次輸入的密碼不一致', next))
 	}
 
 	if (!validator.isLength(password, { min: 8 })) {
-		return next(appError(400, '密碼長度需大於8位數', next))
+		return next(appError(400, '密碼長度必須大於8個字元', next))
 	}
 
 	if (!validator.isEmail(email)) {
-		return next(appError(400, 'Email 格是不正確', next))
+		return next(appError(400, '電子郵件格式不正確', next))
 	}
 
 	try {
 		const existingUser = await User.findOne({ email })
 		if (existingUser) {
-			return next(appError(400, '該 Email 已被註冊', next))
+			return next(appError(400, '此電子郵件已被註冊', next))
 		}
 
 		const hashedPassword = await bcrypt.hash(password, 12)
@@ -83,12 +84,20 @@ exports.sign_up = handleErrorAsync(async (req, res, next) => {
 			password: hashedPassword,
 			name,
 			role: 'user',
-			cart: [],
+			createdAt: new Date(),
 		})
 
-		generateSendJWT(newUser, 201, res)
+		handleSuccess(res, {
+			message: '註冊成功',
+			user: {
+				id: newUser._id,
+				name: newUser.name,
+				email: newUser.email,
+			},
+		})
 	} catch (error) {
-		return next(appError(500, '註冊失敗，請稍後在試', next))
+		console.error('註冊失敗:', error)
+		return next(appError(500, '伺服器錯誤，請稍後再試', next))
 	}
 })
 
@@ -104,122 +113,3 @@ exports.sign_in = handleErrorAsync(async (req, res, next) => {
 	}
 	generateSendJWT(user, 200, res)
 })
-
-exports.addcart = async (req, res, next) => {
-	handleErrorAsync(async (req, res, next) => {
-		const { image, title, price, quantity } = req.body
-
-		try {
-			const user = await User.findById(req.user.id)
-
-			if (!user) {
-				return res.status(404).json({ error: '使用者尚未登入' })
-			}
-
-			// 查找是否已有同名商品
-			const existingItem = user.cart.find(item => item.title === title)
-
-			if (existingItem) {
-				// 如果已存在，增加數量
-				existingItem.quantity = (existingItem.quantity || 1) + (quantity || 1)
-			} else {
-				// 否則，添加新商品
-				const newItem = {
-					image: image,
-					title: title,
-					price: price,
-					quantity: quantity || 1,
-				}
-				user.cart.push(newItem)
-			}
-
-			// 計算金額
-			existingItem.price = existingItem.quantity * price
-
-			await user.save()
-
-			res.status(200).json({ message: '商品已添加到購物車' })
-		} catch (err) {
-			console.error(err)
-			res.status(500).json({ error: '伺服器錯誤' })
-		}
-	})
-}
-
-exports.getcart = async (req, res, next) => {
-	handleErrorAsync(async (req, res, next) => {
-		try {
-			const user = await User.findById(req.user.id)
-
-			if (!user) {
-				return res.status(404).json({ error: '使用者尚未登入' })
-			}
-
-			res.status(200).json({ cart: user.cart })
-		} catch (err) {
-			console.error(err)
-			res.status(500).json({ error: '伺服器錯誤' })
-		}
-	})
-}
-
-exports.deleteCart = async (req, res, next) => {
-	try {
-		const userId = req.user.id
-		const id = req.params.id
-
-		const user = await User.findById(userId)
-
-		if (!user) {
-			return res.status(404).json({ error: '使用者尚未登入' })
-		}
-
-		const itemIndex = user.cart.findIndex(item => item._id.toString() === id)
-
-		if (itemIndex === -1) {
-			return res.status(404).json({ error: '找不到該商品' })
-		}
-
-		user.cart.splice(itemIndex, 1)
-		await user.save()
-
-		res.status(200).json({ message: '商品已從購物車中刪除' })
-	} catch (err) {
-		console.error(err)
-		res.status(500).json({ error: '伺服器錯誤' })
-	}
-}
-
-exports.updateCart = async (req, res, next) => {
-	handleErrorAsync(async (req, res, next) => {
-		const { image, title, price, quantity } = req.body
-		const id = req.params.id
-
-		try {
-			const user = await User.findById(req.user.id)
-
-			if (!user) {
-				return res.status(404).json({ error: '使用者尚未登入' })
-			}
-
-			const item = user.cart.find(item => item._id.toString() === id)
-
-			if (!item) {
-				return res.status(404).json({ error: '找不到該商品' })
-			}
-
-			// 更新商品資訊
-			if (image !== undefined) item.image = image
-			if (title !== undefined) item.title = title
-			if (price !== undefined) item.price = price
-			if (quantity !== undefined) item.quantity = quantity
-
-			await user.save()
-
-			res.status(200).json({ message: '商品資訊已更新', cart: user.cart })
-		} catch (err) {
-			console.error(err)
-			res.status(500).json({ error: '伺服器錯誤' })
-		}
-	})
-}
