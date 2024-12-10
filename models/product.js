@@ -43,6 +43,22 @@ const productSchema = new mongoose.Schema(
 			type: String,
 			default: '',
 		},
+		length: {
+			type: Number,
+			default: '',
+		},
+		width: {
+			type: Number,
+			default: '',
+		},
+		thickness: {
+			type: Number,
+			default: '',
+		},
+		buoyancy: {
+			type: Number,
+			default: '',
+		},
 	},
 	{ versionKey: false }, // 保留 `_id` 並禁用 `__v`
 )

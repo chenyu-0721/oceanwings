@@ -10,7 +10,7 @@
 			"get": {
 				"summary": "取得所有商品",
 				"description": "獲取系統中的所有商品列表 [商品](https://oceanwings.onrender.com/product)",
-				"tags": ["商品"],
+				"tags": ["products"],
 				"parameters": [
 					{
 						"in": "query",
@@ -86,6 +86,22 @@
 													"description": {
 														"type": "string",
 														"description": "商品描述"
+													},
+													"length": {
+														"type": "number",
+														"description": "商品長度"
+													},
+													"width": {
+														"type": "number",
+														"description": "商品寬度"
+													},
+													"thickness": {
+														"type": "number",
+														"description": "商品厚度"
+													},
+													"buoyancy": {
+														"type": "number",
+														"description": "商品浮力"
 													}
 												}
 											}
@@ -137,7 +153,7 @@
 			"post": {
 				"summary": "建立新商品",
 				"description": "在系統中新增一個商品",
-				"tags": ["商品"],
+				"tags": ["products"],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -184,6 +200,22 @@
 									"description": {
 										"type": "string",
 										"description": "商品描述"
+									},
+									"length": {
+										"type": "number",
+										"description": "商品長度"
+									},
+									"width": {
+										"type": "number",
+										"description": "商品寬度"
+									},
+									"thickness": {
+										"type": "number",
+										"description": "商品厚度"
+									},
+									"buoyancy": {
+										"type": "number",
+										"description": "商品浮力"
 									}
 								},
 								"required": ["name", "price"]
@@ -245,6 +277,22 @@
 												"description": {
 													"type": "string",
 													"description": "商品描述"
+												},
+												"length": {
+													"type": "number",
+													"description": "商品長度"
+												},
+												"width": {
+													"type": "number",
+													"description": "商品寬度"
+												},
+												"thickness": {
+													"type": "number",
+													"description": "商品厚度"
+												},
+												"buoyancy": {
+													"type": "number",
+													"description": "商品浮力"
 												}
 											}
 										}
@@ -300,7 +348,7 @@
 			"put": {
 				"summary": "更新特定商品",
 				"description": "根據商品ID更新商品資訊",
-				"tags": ["商品"],
+				"tags": ["products"],
 				"parameters": [
 					{
 						"in": "path",
@@ -358,6 +406,22 @@
 									"description": {
 										"type": "string",
 										"description": "商品描述"
+									},
+									"length": {
+										"type": "number",
+										"description": "商品長度"
+									},
+									"width": {
+										"type": "number",
+										"description": "商品寬度"
+									},
+									"thickness": {
+										"type": "number",
+										"description": "商品厚度"
+									},
+									"buoyancy": {
+										"type": "number",
+										"description": "商品浮力"
 									}
 								}
 							}
@@ -471,7 +535,7 @@
 			"delete": {
 				"summary": "刪除特定商品",
 				"description": "根據商品ID刪除單一商品",
-				"tags": ["商品"],
+				"tags": ["products"],
 				"parameters": [
 					{
 						"in": "path",
@@ -563,7 +627,7 @@
 		"/users": {
 			"get": {
 				"summary": "獲取所有用戶",
-				"tags": ["使用者"],
+				"tags": ["users"],
 				"description": "[使用者](https://oceanwings.onrender.com/users)",
 				"responses": {
 					"200": {
@@ -626,7 +690,7 @@
 			"delete": {
 				"summary": "刪除指定使用者",
 				"description": "根據使用者ID刪除特定使用者帳號",
-				"tags": ["使用者"],
+				"tags": ["users"],
 				"parameters": [
 					{
 						"in": "path",
@@ -709,7 +773,7 @@
 		"/users/sign_up": {
 			"post": {
 				"summary": "用戶註冊",
-				"tags": ["使用者"],
+				"tags": ["users"],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -778,7 +842,7 @@
 		"/users/sign_in": {
 			"post": {
 				"summary": "用戶登入",
-				"tags": ["使用者"],
+				"tags": ["users"],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -838,7 +902,7 @@
 			"get": {
 				"summary": "取得使用者購物車內容",
 				"description": "取得當前登入用戶的購物車資料",
-				"tags": ["購物車"],
+				"tags": ["carts"],
 				"security": [
 					{
 						"bearerAuth": []
@@ -931,7 +995,7 @@
 			"post": {
 				"summary": "新增商品至購物車",
 				"description": "將指定商品加入當前用戶的購物車中，若商品已存在則增加數量",
-				"tags": ["購物車"],
+				"tags": ["carts"],
 				"security": [
 					{
 						"bearerAuth": []
@@ -1070,7 +1134,7 @@
 			"put": {
 				"summary": "更新購物車商品數量",
 				"description": "更新購物車中某個商品的數量，若商品不存在則新增商品至購物車",
-				"tags": ["購物車"],
+				"tags": ["carts"],
 				"security": [
 					{
 						"bearerAuth": []
@@ -1209,7 +1273,7 @@
 			"delete": {
 				"summary": "從購物車中刪除商品",
 				"description": "從用戶的購物車中刪除指定的商品",
-				"tags": ["購物車"],
+				"tags": ["carts"],
 				"security": [
 					{
 						"bearerAuth": []
