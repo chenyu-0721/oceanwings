@@ -22,12 +22,14 @@ exports.addItemToCart = async (req, res, next) => {
 	try {
 		const userId = req.user._id // 假設您使用 JWT 驗證並已經在 req.user 中設置了當前用戶
 		const { productId, quantity } = req.body // 取得請求中的 productId 和 quantity
+		console.log(productId, quantity)
 
 		if (quantity <= 0) {
 			return handleError(res, '數量必須大於 0')
 		}
 
 		const product = await Product.findById(productId)
+
 		if (!product) {
 			return handleError(res, '商品不存在')
 		}
@@ -66,6 +68,8 @@ exports.addItemToCart = async (req, res, next) => {
 
 		handleSuccess(res, cart)
 	} catch (err) {
+		console.log(err)
+
 		handleError(res, '新增商品至購物車失敗')
 	}
 }

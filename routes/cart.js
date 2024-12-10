@@ -7,8 +7,8 @@ router.get('/', isAuth, ctrl_cart.getCart)
 
 router.post('/', isAuth, ctrl_cart.addItemToCart)
 
-router.put('/:id', isAuth, ctrl_cart.updateCart)
+router.put('/', isAuth, ctrl_cart.updateCart)
 
-router.delete('/:id', isAuth, ctrl_cart.deleteItemFromCart)
+router.delete('/', isAuth, ctrl_cart.deleteItemFromCart)
 
 module.exports = router

@@ -3,59 +3,50 @@ const AutoIncrement = require('mongoose-sequence')(mongoose)
 
 const productSchema = new mongoose.Schema(
 	{
-		_id: Number,
 		productId: {
 			type: String,
-			default: 0,
+			default: '', // 預設為空字串
 		},
 		name: {
 			type: String,
-			default: 0,
+			default: '', // 預設為空字串
 		},
 		type: {
 			type: String,
-			default: 0,
+			default: '', // 預設為空字串
 		},
 		grade: {
 			type: String,
-			default: 0,
+			default: '', // 預設為空字串
 		},
 		price: {
 			type: Number,
-			default: 0,
+			default: 0, // 預設為 0
 		},
 		quantity: {
 			type: Number,
-			default: 0,
+			default: 0, // 預設為 0
 		},
 		status: {
 			type: Boolean,
-			default: 0,
+			default: false, // 預設為 false
 		},
 		hasDiscount: {
 			type: Boolean,
-			default: 0,
-		},
-		productId: {
-			type: String,
-			default: 0,
+			default: false, // 預設為 false
 		},
 		imageUrl: {
 			type: String,
-			default: 0,
+			default: '', // 預設為空字串
 		},
 		description: {
 			type: String,
-			default: 0,
+			default: '', // 預設為空字串
 		},
 	},
-	{ versionKey: false, _id: false },
+	{ versionKey: false }, // 保留 `_id` 並禁用 `__v`
 )
 
-productSchema.plugin(AutoIncrement, {
-	id: 'product_seq',
-	inc_field: '_id',
-})
-
-const product = mongoose.model('Product', productSchema)
-module.exports = product
+// 創建並導出模型
+const Product = mongoose.model('Product', productSchema)
+module.exports = Product
