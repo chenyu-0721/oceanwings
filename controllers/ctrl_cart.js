@@ -118,6 +118,7 @@ exports.updateCart = async (req, res, next) => {
 
 			if (productIndex > -1) {
 				// 如果商品已經存在於購物車，更新數量
+
 				cart.products[productIndex].quantity = quantity
 			} else {
 				// 如果商品不存在於購物車，則新增商品
