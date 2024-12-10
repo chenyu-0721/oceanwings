@@ -41,12 +41,12 @@ exports.addProduct = async (req, res, next) => {
 }
 
 exports.editProduct = async (req, res, next) => {
+	console.log(req.params.id, req.body)
 	try {
-		console.log(req.body)
-
 		const newpost = await Product.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
 		})
+
 		handleSuccess(res, newpost)
 	} catch (err) {
 		const error = '編輯失敗'

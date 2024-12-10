@@ -297,7 +297,7 @@
 			}
 		},
 		"/product/{id}": {
-			"post": {
+			"put": {
 				"summary": "更新特定商品",
 				"description": "根據商品ID更新商品資訊",
 				"tags": ["商品"],

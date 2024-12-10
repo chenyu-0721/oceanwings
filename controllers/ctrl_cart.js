@@ -12,6 +12,8 @@ exports.getCart = async (req, res, next) => {
 			return handleError(res, '購物車為空或未找到')
 		}
 
+		console.log(cart)
+
 		handleSuccess(res, cart)
 	} catch (err) {
 		handleError(res, '取得購物車失敗')
