@@ -4,14 +4,14 @@ const cartSchema = new mongoose.Schema(
 	{
 		userId: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User', // 參考 Users 模型，將會與用戶關聯
+			ref: 'User', // 關聯
 			required: true,
 		},
 		products: [
 			{
 				productId: {
 					type: mongoose.Schema.Types.ObjectId,
-					ref: 'Product', // 參考 Products 模型，將會與商品關聯
+					ref: 'Product', // 關聯
 					required: true,
 				},
 				quantity: {

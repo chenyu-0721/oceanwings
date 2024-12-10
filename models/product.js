@@ -5,43 +5,43 @@ const productSchema = new mongoose.Schema(
 	{
 		productId: {
 			type: String,
-			default: '', // 預設為空字串
+			default: '',
 		},
 		name: {
 			type: String,
-			default: '', // 預設為空字串
+			default: '',
 		},
 		type: {
 			type: String,
-			default: '', // 預設為空字串
+			default: '',
 		},
 		grade: {
 			type: String,
-			default: '', // 預設為空字串
+			default: '',
 		},
 		price: {
 			type: Number,
-			default: 0, // 預設為 0
+			default: 0,
 		},
 		quantity: {
 			type: Number,
-			default: 0, // 預設為 0
+			default: 0,
 		},
 		status: {
 			type: Boolean,
-			default: false, // 預設為 false
+			default: false,
 		},
 		hasDiscount: {
 			type: Boolean,
-			default: false, // 預設為 false
+			default: false,
 		},
 		imageUrl: {
 			type: String,
-			default: '', // 預設為空字串
+			default: '',
 		},
 		description: {
 			type: String,
-			default: '', // 預設為空字串
+			default: '',
 		},
 	},
 	{ versionKey: false }, // 保留 `_id` 並禁用 `__v`

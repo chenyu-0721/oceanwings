@@ -57,7 +57,7 @@ exports.addItemToCart = async (req, res, next) => {
 				// 如果商品已經存在於購物車，計算新的總數量
 				const newQuantity = cart.products[productIndex].quantity + quantity
 
-				// 再次檢查總數量是否超過庫存
+				// 檢查總數量是否超過庫存
 				if (product.stock < newQuantity) {
 					return handleError(res, '超過可用庫存')
 				}
@@ -75,7 +75,6 @@ exports.addItemToCart = async (req, res, next) => {
 		product.quantity -= quantity
 		await product.save()
 
-		// 保存或更新購物車
 		await cart.save()
 
 		handleSuccess(res, cart)
@@ -88,7 +87,7 @@ exports.addItemToCart = async (req, res, next) => {
 exports.updateCart = async (req, res, next) => {
 	try {
 		const userId = req.user._id
-		const { productId, quantity } = req.body // 取得請求中的 productId 和 quantity
+		const { productId, quantity } = req.body // 取得 productId 和 quantity
 
 		if (quantity <= 0) {
 			return handleError(res, '數量必須大於 0')
