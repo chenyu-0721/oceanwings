@@ -154,6 +154,11 @@
 				"summary": "建立新商品",
 				"description": "在系統中新增一個商品",
 				"tags": ["Products"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -349,6 +354,11 @@
 				"summary": "更新特定商品",
 				"description": "根據商品ID更新商品資訊",
 				"tags": ["Products"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -536,6 +546,11 @@
 				"summary": "刪除特定商品",
 				"description": "根據商品ID刪除單一商品",
 				"tags": ["Products"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -629,6 +644,11 @@
 				"summary": "獲取所有用戶",
 				"tags": ["Users"],
 				"description": "[使用者](https://oceanwings.onrender.com/users)",
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"responses": {
 					"200": {
 						"description": "成功返回用戶列表",
@@ -864,6 +884,11 @@
 				"summary": "刪除指定使用者",
 				"description": "根據使用者ID刪除特定使用者帳號",
 				"tags": ["Users"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
 				"parameters": [
 					{
 						"in": "path",
@@ -1803,6 +1828,485 @@
 										"message": {
 											"type": "string",
 											"example": "無法送出訂單"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/coupon": {
+			"get": {
+				"summary": "取得所有折價券",
+				"description": "以分頁形式取得所有折價券的列表。",
+				"tags": ["Coupon"],
+				"parameters": [
+					{
+						"in": "query",
+						"name": "page",
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"default": 1
+						},
+						"description": "分頁頁碼（可選，預設為 1）"
+					},
+					{
+						"in": "query",
+						"name": "limit",
+						"schema": {
+							"type": "integer",
+							"minimum": 1,
+							"maximum": 100,
+							"default": 10
+						},
+						"description": "每頁顯示的折價券數量（可選，預設為 10）"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "成功取得折價券列表",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"_id": {
+														"type": "string",
+														"description": "折價券的唯一標識符"
+													},
+													"name": {
+														"type": "string",
+														"description": "折價券名稱"
+													},
+													"discount": {
+														"type": "number",
+														"description": "折扣百分比"
+													},
+													"quantity": {
+														"type": "number",
+														"description": "折價券剩餘數量"
+													},
+													"createdAt": {
+														"type": "string",
+														"format": "date-time",
+														"description": "折價券創建時間"
+													},
+													"expiresAt": {
+														"type": "string",
+														"format": "date-time",
+														"description": "折價券過期時間"
+													}
+												}
+											}
+										},
+										"meta": {
+											"type": "object",
+											"properties": {
+												"totalItems": {
+													"type": "integer",
+													"description": "總折價券數"
+												},
+												"totalPages": {
+													"type": "integer",
+													"description": "總頁數"
+												},
+												"currentPage": {
+													"type": "integer",
+													"description": "當前頁碼"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "折價券取得失敗"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "新增折價券",
+				"description": "建立新的折價券，包含名稱、折扣、數量和有效期限。",
+				"tags": ["Coupon"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "折價券名稱",
+										"example": "SUMMER2024"
+									},
+									"discount": {
+										"type": "number",
+										"description": "折扣百分比",
+										"example": 20
+									},
+									"quantity": {
+										"type": "number",
+										"description": "折價券的可用數量",
+										"example": 50
+									},
+									"expiresAt": {
+										"type": "string",
+										"format": "date-time",
+										"description": "折價券的有效期限",
+										"example": "2024-12-31T23:59:59Z"
+									}
+								},
+								"required": ["name", "discount", "quantity", "expiresAt"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"201": {
+						"description": "成功新增折價券",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"_id": {
+											"type": "string",
+											"description": "折價券的唯一標識符"
+										},
+										"name": {
+											"type": "string",
+											"description": "折價券名稱"
+										},
+										"discount": {
+											"type": "number",
+											"description": "折扣百分比"
+										},
+										"quantity": {
+											"type": "number",
+											"description": "折價券剩餘數量"
+										},
+										"createdAt": {
+											"type": "string",
+											"format": "date-time",
+											"description": "折價券創建時間"
+										},
+										"expiresAt": {
+											"type": "string",
+											"format": "date-time",
+											"description": "折價券有效期限"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "請求錯誤，資料驗證失敗",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "建立失敗"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "伺服器發生錯誤，請稍後再試"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/coupon/{id}": {
+			"put": {
+				"summary": "編輯折價券",
+				"description": "根據折價券的ID更新折價券資訊（名稱、折扣、數量、有效期限）。",
+				"tags": ["Coupon"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"description": "折價券的唯一標識符"
+						},
+						"description": "折價券的ID"
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"name": {
+										"type": "string",
+										"description": "折價券名稱",
+										"example": "SUMMER2024"
+									},
+									"discount": {
+										"type": "number",
+										"description": "折扣百分比",
+										"example": 20
+									},
+									"quantity": {
+										"type": "number",
+										"description": "折價券剩餘數量",
+										"example": 50
+									},
+									"expiresAt": {
+										"type": "string",
+										"format": "date-time",
+										"description": "折價券的有效期限",
+										"example": "2024-12-31T23:59:59Z"
+									}
+								},
+								"required": ["name", "discount", "quantity", "expiresAt"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "成功編輯折價券",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"_id": {
+											"type": "string",
+											"description": "折價券的唯一標識符"
+										},
+										"name": {
+											"type": "string",
+											"description": "折價券名稱"
+										},
+										"discount": {
+											"type": "number",
+											"description": "折扣百分比"
+										},
+										"quantity": {
+											"type": "number",
+											"description": "折價券剩餘數量"
+										},
+										"createdAt": {
+											"type": "string",
+											"format": "date-time",
+											"description": "折價券創建時間"
+										},
+										"expiresAt": {
+											"type": "string",
+											"format": "date-time",
+											"description": "折價券有效期限"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "請求錯誤，資料驗證失敗",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "編輯失敗"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "伺服器發生錯誤，請稍後再試"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "刪除折價券",
+				"description": "根據折價券的ID刪除折價券。",
+				"tags": ["Coupon"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"description": "折價券的唯一標識符"
+						},
+						"description": "折價券的ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "成功刪除折價券",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"_id": {
+											"type": "string",
+											"description": "折價券的唯一標識符"
+										},
+										"name": {
+											"type": "string",
+											"description": "折價券名稱"
+										},
+										"discount": {
+											"type": "number",
+											"description": "折扣百分比"
+										},
+										"quantity": {
+											"type": "number",
+											"description": "折價券剩餘數量"
+										},
+										"createdAt": {
+											"type": "string",
+											"format": "date-time",
+											"description": "折價券創建時間"
+										},
+										"expiresAt": {
+											"type": "string",
+											"format": "date-time",
+											"description": "折價券過期時間"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "請求錯誤，資料驗證失敗",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "刪除失敗"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "伺服器發生錯誤，請稍後再試"
 										}
 									}
 								}
