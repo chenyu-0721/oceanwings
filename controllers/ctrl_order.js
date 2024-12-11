@@ -3,6 +3,31 @@ const Order = require('../models/order')
 const Product = require('../models/product')
 const handleSuccess = require('../handleSuccess.js')
 const mongoose = require('mongoose')
+const handleError = require('../handleError')
+
+exports.getUserOrder = async (req, res, next) => {
+	try {
+		const userId = req.user._id
+
+		const orders = await Order.find({ userId: userId })
+			.populate({
+				path: 'items.productId',
+				select: 'name imageUrl price description',
+			})
+			.sort({ createdAt: -1 })
+
+		if (!orders || orders.length === 0) {
+			return res.status(404).json({
+				status: 'fail',
+				message: '沒有找到相關訂單！',
+			})
+		}
+
+		handleSuccess(res, orders)
+	} catch (err) {
+		handleError(res, err)
+	}
+}
 
 exports.getAllOrders = async (req, res, next) => {
 	const page = parseInt(req.query.page) || 1
@@ -43,30 +68,6 @@ exports.getAllOrders = async (req, res, next) => {
 	handleSuccess(res, data)
 }
 
-exports.getOrderById = async (req, res, next) => {
-	const orderId = req.params.id
-
-	const order = await Order.findById(orderId).populate({
-		path: 'items.productId',
-		select: 'name imageUrl price description',
-	})
-
-	// Check if order exists
-	if (!order) {
-		const error = new Error('Order not found')
-		error.statusCode = 404
-		throw error
-	}
-
-	// Check user permissions
-	if (req.user.role !== 'admin' && order.userId.toString() !== req.user.id) {
-		const error = new Error('Not authorized to view this order')
-		error.statusCode = 403
-		throw error
-	}
-
-	handleSuccess(res, order)
-}
 exports.checkout = async (req, res, next) => {
 	const userId = req.user.id
 

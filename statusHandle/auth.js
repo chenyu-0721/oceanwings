@@ -30,30 +30,35 @@ const generateSendJWT = (user, statusCode, res) => {
 }
 
 const isAuth = handleErrorAsync(async (req, res, next) => {
-	let token = req.cookies.jwt
+	const token = req.cookies.jwt
 
 	if (!token) {
 		return next(appError(401, '你尚未登入！', next))
 	}
+
 	const decoded = await new Promise((resolve, reject) => {
 		jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
 			if (err) {
-				reject(err)
-			} else {
-				resolve(payload)
+				return reject(appError(401, '無效的 token！', next))
 			}
+			resolve(payload)
 		})
 	})
 
 	const currentUser = await User.findById(decoded.id)
 
-	if (!currentUser) {
-		return next(appError(401, '此用戶不再存在！', next))
+	if (!currentUser.role === 'admin') {
+		return next(appError(401, '權限不足', next))
 	}
 
+	// 附加用戶資訊到 req
 	req.user = currentUser
+
+	// 繼續執行下一個中介軟體
 	next()
 })
+
+module.exports = isAuth
 
 const logout = res => {
 	res.clearCookie('jwt', {
