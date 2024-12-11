@@ -9,4 +9,6 @@ router.get('/user', isAuth, ctrl_order.getUserOrder)
 
 router.post('/checkout', isAuth, ctrl_order.checkout)
 
+router.post('/complete', isAuth, ctrl_order.completeOrder)
+
 module.exports = router

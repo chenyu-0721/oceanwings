@@ -110,7 +110,31 @@ exports.checkout = async (req, res, next) => {
 		await session.abortTransaction()
 		session.endSession()
 
-		console.error('訂單處理錯誤:', error)
 		res.status(500).json({ message: '無法送出訂單', error: error.message })
+	}
+}
+
+exports.completeOrder = async (req, res, next) => {
+	const { orderId } = req.body
+
+	try {
+		const order = await Order.findById(orderId)
+
+		if (!order) {
+			return res.status(404).json({ message: '找不到此訂單' })
+		}
+
+		if (order.status === 'Completed') {
+			return res.status(400).json({ message: '此訂單已完成' })
+		}
+
+		order.status = 'Completed'
+		order.completedAt = new Date()
+
+		await order.save()
+
+		handleSuccess(res, order)
+	} catch (error) {
+		res.status(500).json({ message: '無法完成訂單', error: error.message })
 	}
 }
