@@ -6,7 +6,7 @@ const appError = require('../statusHandle/appError')
 const handleErrorAsync = require('../statusHandle/handleErrorAsync')
 const handleSuccess = require('../handleSuccess.js')
 const handleError = require('../handleError.js')
-const { generateSendJWT } = require('../statusHandle/auth')
+const { generateSendJWT, logout } = require('../statusHandle/auth')
 
 exports.getUser = async (req, res, next) => {
 	try {
@@ -102,4 +102,9 @@ exports.sign_in = handleErrorAsync(async (req, res, next) => {
 		return next(appError(400, '您的密碼不正確', next))
 	}
 	generateSendJWT(user, 200, res)
+})
+
+exports.logout = handleErrorAsync(async (req, res, next) => {
+	logout(res)
+	res.status(200).json({ message: '登出成功' })
 })

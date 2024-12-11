@@ -898,6 +898,51 @@
 				}
 			}
 		},
+		"/users/logout": {
+			"post": {
+				"summary": "登出",
+				"description": "登出當前用戶，清除存儲在 Cookie 中的 JWT。",
+				"tags": ["Users"],
+				"responses": {
+					"200": {
+						"description": "登出成功",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "登出成功"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "無法完成登出"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
 		"/cart": {
 			"get": {
 				"summary": "取得使用者購物車內容",
