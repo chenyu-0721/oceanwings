@@ -686,90 +686,6 @@
 				}
 			}
 		},
-		"/users/{id}": {
-			"delete": {
-				"summary": "刪除指定使用者",
-				"description": "根據使用者ID刪除特定使用者帳號",
-				"tags": ["Users"],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "string"
-						},
-						"description": "要刪除的使用者ID"
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "使用者成功刪除",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"status": {
-											"type": "string",
-											"example": "success"
-										},
-										"message": {
-											"type": "string",
-											"example": "使用者刪除成功"
-										}
-									}
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "找不到指定的使用者",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"status": {
-											"type": "string",
-											"example": "error"
-										},
-										"message": {
-											"type": "string",
-											"example": "找不到指定的使用者"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "伺服器內部錯誤",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"status": {
-											"type": "string",
-											"example": "error"
-										},
-										"message": {
-											"type": "string",
-											"example": "無法刪除使用者"
-										},
-										"error": {
-											"type": "string",
-											"description": "錯誤詳細信息"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/users/sign_up": {
 			"post": {
 				"summary": "用戶註冊",
@@ -934,6 +850,90 @@
 										"message": {
 											"type": "string",
 											"example": "無法完成登出"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/users/{id}": {
+			"delete": {
+				"summary": "刪除指定使用者",
+				"description": "根據使用者ID刪除特定使用者帳號",
+				"tags": ["Users"],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "要刪除的使用者ID"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "使用者成功刪除",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "success"
+										},
+										"message": {
+											"type": "string",
+											"example": "使用者刪除成功"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "找不到指定的使用者",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "找不到指定的使用者"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器內部錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "無法刪除使用者"
+										},
+										"error": {
+											"type": "string",
+											"description": "錯誤詳細信息"
 										}
 									}
 								}
@@ -1445,136 +1445,6 @@
 				}
 			}
 		},
-		"/orders/checkout": {
-			"post": {
-				"summary": "送出訂單",
-				"description": "將購物車的內容送出並建立訂單，同時清空購物車。",
-				"tags": ["Orders"],
-				"security": [
-					{
-						"bearerAuth": []
-					}
-				],
-				"responses": {
-					"201": {
-						"description": "成功建立訂單",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"message": {
-											"type": "string",
-											"example": "訂單建立成功"
-										},
-										"order": {
-											"type": "object",
-											"properties": {
-												"id": {
-													"type": "string",
-													"description": "訂單的唯一標識符"
-												},
-												"userId": {
-													"type": "string",
-													"description": "用戶的唯一標識符"
-												},
-												"items": {
-													"type": "array",
-													"items": {
-														"type": "object",
-														"properties": {
-															"productId": {
-																"type": "string",
-																"description": "商品的唯一標識符"
-															},
-															"quantity": {
-																"type": "integer",
-																"description": "商品數量"
-															},
-															"price": {
-																"type": "number",
-																"description": "商品價格"
-															}
-														}
-													}
-												},
-												"totalPrice": {
-													"type": "number",
-													"description": "訂單總金額"
-												},
-												"status": {
-													"type": "string",
-													"description": "訂單狀態",
-													"example": "Pending",
-													"enum": ["Pending", "Processing", "Shipped", "Completed", "Cancelled"]
-												},
-												"createdAt": {
-													"type": "string",
-													"description": "訂單建立的時間",
-													"format": "date-time"
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					},
-					"400": {
-						"description": "無效的請求，例如購物車為空或庫存不足",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"message": {
-											"type": "string",
-											"example": "購物車是空的"
-										}
-									}
-								}
-							}
-						}
-					},
-					"401": {
-						"description": "未授權",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"message": {
-											"type": "string",
-											"example": "未登入或授權失敗"
-										}
-									}
-								}
-							}
-						}
-					},
-					"500": {
-						"description": "伺服器錯誤",
-						"content": {
-							"application/json": {
-								"schema": {
-									"type": "object",
-									"properties": {
-										"status": {
-											"type": "string",
-											"example": "error"
-										},
-										"message": {
-											"type": "string",
-											"example": "無法送出訂單"
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		},
 		"/orders": {
 			"get": {
 				"summary": "取得訂單列表",
@@ -1804,6 +1674,136 @@
 									"properties": {
 										"status": { "type": "string", "example": "error" },
 										"message": { "type": "string", "example": "找不到該訂單" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/orders/checkout": {
+			"post": {
+				"summary": "送出訂單",
+				"description": "將購物車的內容送出並建立訂單，同時清空購物車。",
+				"tags": ["Orders"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "成功建立訂單",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "訂單建立成功"
+										},
+										"order": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "訂單的唯一標識符"
+												},
+												"userId": {
+													"type": "string",
+													"description": "用戶的唯一標識符"
+												},
+												"items": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"productId": {
+																"type": "string",
+																"description": "商品的唯一標識符"
+															},
+															"quantity": {
+																"type": "integer",
+																"description": "商品數量"
+															},
+															"price": {
+																"type": "number",
+																"description": "商品價格"
+															}
+														}
+													}
+												},
+												"totalPrice": {
+													"type": "number",
+													"description": "訂單總金額"
+												},
+												"status": {
+													"type": "string",
+													"description": "訂單狀態",
+													"example": "Pending",
+													"enum": ["Pending", "Processing", "Shipped", "Completed", "Cancelled"]
+												},
+												"createdAt": {
+													"type": "string",
+													"description": "訂單建立的時間",
+													"format": "date-time"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "無效的請求，例如購物車為空或庫存不足",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "購物車是空的"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "未授權",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "未登入或授權失敗"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "無法送出訂單"
+										}
 									}
 								}
 							}
