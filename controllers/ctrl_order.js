@@ -16,6 +16,8 @@ exports.getUserOrder = async (req, res, next) => {
 			})
 			.sort({ createdAt: -1 })
 
+		console.log(orders)
+
 		if (!orders || orders.length === 0) {
 			return res.status(404).json({
 				status: 'fail',
@@ -79,15 +81,6 @@ exports.checkout = async (req, res, next) => {
 
 		if (!cart || cart.products.length === 0) {
 			return res.status(400).json({ message: '購物車是空的' })
-		}
-
-		for (let item of cart.products) {
-			const product = item.productId
-			if (product.quantity < item.quantity) {
-				return res.status(400).json({
-					message: `產品 ${product.name} 庫存不足`,
-				})
-			}
 		}
 
 		const order = new Order({
