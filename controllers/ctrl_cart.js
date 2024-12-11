@@ -12,9 +12,19 @@ exports.getCart = async (req, res, next) => {
 			return handleError(res, '購物車為空或未找到')
 		}
 
-		console.log(cart)
+		const data = {
+			userId: cart.userId,
+			products: cart.products.map(item => ({
+				productId: item.productId._id,
+				name: item.productId.name,
+				price: item.productId.price,
+				quantity: item.quantity,
+				totalPrice: item.productId.price * item.quantity,
+			})),
+			totalPrice: cart.products.reduce((sum, item) => sum + item.productId.price * item.quantity, 0),
+		}
 
-		handleSuccess(res, cart)
+		handleSuccess(res, data)
 	} catch (err) {
 		handleError(res, '取得購物車失敗')
 	}
@@ -60,7 +70,7 @@ exports.addItemToCart = async (req, res, next) => {
 				const newQuantity = cart.products[productIndex].quantity + quantity
 
 				// 檢查總數量是否超過庫存
-				if (product.stock < newQuantity) {
+				if (product.quantity < newQuantity) {
 					return handleError(res, '超過可用庫存')
 				}
 
@@ -101,7 +111,7 @@ exports.updateCart = async (req, res, next) => {
 		}
 
 		// 檢查是否有足夠的庫存
-		if (product.stock < quantity) {
+		if (product.quantity < quantity) {
 			return handleError(res, '庫存不足')
 		}
 
@@ -128,7 +138,7 @@ exports.updateCart = async (req, res, next) => {
 				const quantityDifference = quantity - oldQuantity
 
 				// 如果新增數量超過庫存，拒絕更新
-				if (product.stock < quantityDifference) {
+				if (product.quantity < quantityDifference) {
 					return handleError(res, '庫存不足')
 				}
 
@@ -136,7 +146,7 @@ exports.updateCart = async (req, res, next) => {
 				cart.products[productIndex].quantity = quantity
 
 				// 調整商品庫存
-				product.stock -= quantityDifference
+				product.quantity -= quantityDifference
 				await product.save()
 			} else {
 				// 如果商品不存在於購物車，則新增商品
@@ -146,7 +156,7 @@ exports.updateCart = async (req, res, next) => {
 				})
 
 				// 減少商品庫存
-				product.stock -= quantity
+				product.quantity -= quantity
 				await product.save()
 			}
 		}
@@ -184,7 +194,7 @@ exports.deleteItemFromCart = async (req, res, next) => {
 		// 找到對應的商品並回補庫存
 		const product = await Product.findById(productId)
 		if (product) {
-			product.stock += deletedQuantity
+			product.quantity += deletedQuantity
 			await product.save()
 		}
 

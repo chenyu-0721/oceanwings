@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs')
 const appError = require('../statusHandle/appError')
 const handleErrorAsync = require('../statusHandle/handleErrorAsync')
 const handleSuccess = require('../handleSuccess.js')
+const handleError = require('../handleError.js')
 const { generateSendJWT } = require('../statusHandle/auth')
 
 exports.getUser = async (req, res, next) => {
@@ -12,16 +13,9 @@ exports.getUser = async (req, res, next) => {
 		// 從數據庫獲取用戶列表
 		const users = await User.find({}).select('-password') // 排除密碼字段
 
-		res.status(200).json({
-			status: 'success',
-			data: users,
-		})
+		handleSuccess(res, users)
 	} catch (error) {
-		res.status(500).json({
-			status: 'error',
-			message: '無法獲取用戶列表',
-			error: error.message,
-		})
+		handleError(res, '無法獲取用戶列表')
 	}
 }
 
@@ -44,11 +38,7 @@ exports.deleteUser = async (req, res, next) => {
 			message: '使用者刪除成功',
 		})
 	} catch (error) {
-		res.status(500).json({
-			status: 'error',
-			message: '無法刪除使用者',
-			error: error.message,
-		})
+		handleError(res, '無法刪除使用者')
 	}
 }
 

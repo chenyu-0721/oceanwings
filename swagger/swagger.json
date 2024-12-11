@@ -10,7 +10,7 @@
 			"get": {
 				"summary": "取得所有商品",
 				"description": "獲取系統中的所有商品列表 [商品](https://oceanwings.onrender.com/product)",
-				"tags": ["products"],
+				"tags": ["Products"],
 				"parameters": [
 					{
 						"in": "query",
@@ -153,7 +153,7 @@
 			"post": {
 				"summary": "建立新商品",
 				"description": "在系統中新增一個商品",
-				"tags": ["products"],
+				"tags": ["Products"],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -348,7 +348,7 @@
 			"put": {
 				"summary": "更新特定商品",
 				"description": "根據商品ID更新商品資訊",
-				"tags": ["products"],
+				"tags": ["Products"],
 				"parameters": [
 					{
 						"in": "path",
@@ -535,7 +535,7 @@
 			"delete": {
 				"summary": "刪除特定商品",
 				"description": "根據商品ID刪除單一商品",
-				"tags": ["products"],
+				"tags": ["Products"],
 				"parameters": [
 					{
 						"in": "path",
@@ -627,7 +627,7 @@
 		"/users": {
 			"get": {
 				"summary": "獲取所有用戶",
-				"tags": ["users"],
+				"tags": ["Users"],
 				"description": "[使用者](https://oceanwings.onrender.com/users)",
 				"responses": {
 					"200": {
@@ -690,7 +690,7 @@
 			"delete": {
 				"summary": "刪除指定使用者",
 				"description": "根據使用者ID刪除特定使用者帳號",
-				"tags": ["users"],
+				"tags": ["Users"],
 				"parameters": [
 					{
 						"in": "path",
@@ -773,7 +773,7 @@
 		"/users/sign_up": {
 			"post": {
 				"summary": "用戶註冊",
-				"tags": ["users"],
+				"tags": ["Users"],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -842,7 +842,7 @@
 		"/users/sign_in": {
 			"post": {
 				"summary": "用戶登入",
-				"tags": ["users"],
+				"tags": ["Users"],
 				"requestBody": {
 					"required": true,
 					"content": {
@@ -902,7 +902,7 @@
 			"get": {
 				"summary": "取得使用者購物車內容",
 				"description": "取得當前登入用戶的購物車資料",
-				"tags": ["carts"],
+				"tags": ["Carts"],
 				"security": [
 					{
 						"bearerAuth": []
@@ -995,7 +995,7 @@
 			"post": {
 				"summary": "新增商品至購物車",
 				"description": "將指定商品加入當前用戶的購物車中，若商品已存在則增加數量",
-				"tags": ["carts"],
+				"tags": ["Carts"],
 				"security": [
 					{
 						"bearerAuth": []
@@ -1134,7 +1134,7 @@
 			"put": {
 				"summary": "更新購物車商品數量",
 				"description": "更新購物車中某個商品的數量，若商品不存在則新增商品至購物車",
-				"tags": ["carts"],
+				"tags": ["Carts"],
 				"security": [
 					{
 						"bearerAuth": []
@@ -1273,7 +1273,7 @@
 			"delete": {
 				"summary": "從購物車中刪除商品",
 				"description": "從用戶的購物車中刪除指定的商品",
-				"tags": ["carts"],
+				"tags": ["Carts"],
 				"security": [
 					{
 						"bearerAuth": []
@@ -1392,6 +1392,373 @@
 											"type": "string",
 											"example": "刪除商品失敗"
 										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/orders/checkout": {
+			"post": {
+				"summary": "送出訂單",
+				"description": "將購物車的內容送出並建立訂單，同時清空購物車。",
+				"tags": ["Orders"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"responses": {
+					"201": {
+						"description": "成功建立訂單",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "訂單建立成功"
+										},
+										"order": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "string",
+													"description": "訂單的唯一標識符"
+												},
+												"userId": {
+													"type": "string",
+													"description": "用戶的唯一標識符"
+												},
+												"items": {
+													"type": "array",
+													"items": {
+														"type": "object",
+														"properties": {
+															"productId": {
+																"type": "string",
+																"description": "商品的唯一標識符"
+															},
+															"quantity": {
+																"type": "integer",
+																"description": "商品數量"
+															},
+															"price": {
+																"type": "number",
+																"description": "商品價格"
+															}
+														}
+													}
+												},
+												"totalPrice": {
+													"type": "number",
+													"description": "訂單總金額"
+												},
+												"status": {
+													"type": "string",
+													"description": "訂單狀態",
+													"example": "Pending",
+													"enum": ["Pending", "Processing", "Shipped", "Completed", "Cancelled"]
+												},
+												"createdAt": {
+													"type": "string",
+													"description": "訂單建立的時間",
+													"format": "date-time"
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "無效的請求，例如購物車為空或庫存不足",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "購物車是空的"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "未授權",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string",
+											"example": "未登入或授權失敗"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "伺服器錯誤",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "無法送出訂單"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/orders": {
+			"get": {
+				"summary": "取得訂單列表",
+				"description": "獲取訂單列表，支持分頁和狀態篩選",
+				"tags": ["Orders"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "page",
+						"in": "query",
+						"description": "頁碼",
+						"schema": {
+							"type": "integer",
+							"default": 1
+						}
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"description": "每頁筆數",
+						"schema": {
+							"type": "integer",
+							"default": 10
+						}
+					},
+					{
+						"name": "status",
+						"in": "query",
+						"description": "訂單狀態篩選",
+						"schema": {
+							"type": "string",
+							"enum": ["Pending", "Processing", "Shipped", "Completed", "Cancelled"]
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "成功取得訂單列表",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"total": {
+											"type": "integer",
+											"description": "總訂單數"
+										},
+										"page": {
+											"type": "integer",
+											"description": "當前頁碼"
+										},
+										"totalPages": {
+											"type": "integer",
+											"description": "總頁數"
+										},
+										"data": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"_id": {
+														"type": "string",
+														"description": "訂單ID"
+													},
+													"userId": {
+														"type": "string",
+														"description": "用戶ID"
+													},
+													"items": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"productId": {
+																	"type": "object",
+																	"properties": {
+																		"name": { "type": "string" },
+																		"imageUrl": { "type": "string" },
+																		"price": { "type": "number" }
+																	}
+																},
+																"quantity": { "type": "integer" },
+																"price": { "type": "number" }
+															}
+														}
+													},
+													"status": {
+														"type": "string",
+														"enum": ["Pending", "Processing", "Shipped", "Completed", "Cancelled"]
+													},
+													"createdAt": {
+														"type": "string",
+														"format": "date-time"
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "未授權",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string", "example": "error" },
+										"message": { "type": "string", "example": "未登入或授權失敗" }
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/orders/{id}": {
+			"get": {
+				"summary": "取得單一訂單詳情",
+				"description": "根據訂單ID獲取訂單詳細信息",
+				"tags": ["Orders"],
+				"security": [
+					{
+						"bearerAuth": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"description": "訂單ID",
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "成功取得訂單詳情",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"_id": {
+											"type": "string",
+											"description": "訂單ID"
+										},
+										"userId": {
+											"type": "string",
+											"description": "用戶ID"
+										},
+										"items": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"productId": {
+														"type": "object",
+														"properties": {
+															"name": { "type": "string" },
+															"imageUrl": { "type": "string" },
+															"price": { "type": "number" },
+															"description": { "type": "string" }
+														}
+													},
+													"quantity": { "type": "integer" },
+													"price": { "type": "number" }
+												}
+											}
+										},
+										"status": {
+											"type": "string",
+											"enum": ["Pending", "Processing", "Shipped", "Completed", "Cancelled"]
+										},
+										"createdAt": {
+											"type": "string",
+											"format": "date-time"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "未授權",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string", "example": "error" },
+										"message": { "type": "string", "example": "未登入或授權失敗" }
+									}
+								}
+							}
+						}
+					},
+					"403": {
+						"description": "無權限",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string", "example": "error" },
+										"message": { "type": "string", "example": "無權查看此訂單" }
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "訂單不存在",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": { "type": "string", "example": "error" },
+										"message": { "type": "string", "example": "找不到該訂單" }
 									}
 								}
 							}
