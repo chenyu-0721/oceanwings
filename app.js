@@ -9,6 +9,7 @@ var productsRouter = require('./routes/product')
 var cartRouter = require('./routes/cart')
 var orderRouter = require('./routes/order')
 var couponRouter = require('./routes/coupon')
+var uploadRouter = require('./routes/upload')
 
 const swaggerDocument = require('./swagger/swagger.json')
 
@@ -74,6 +75,7 @@ app.use('/product', productsRouter)
 app.use('/cart', cartRouter)
 app.use('/orders', orderRouter)
 app.use('/coupon', couponRouter)
+app.use('/upload', uploadRouter)
 // 路由
 app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 

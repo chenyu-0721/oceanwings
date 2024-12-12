@@ -2418,6 +2418,72 @@
 					}
 				}
 			}
+		},
+		"/upload/image": {
+			"post": {
+				"summary": "上傳圖片並生成訪問 URL",
+				"description": "上傳圖片到伺服器並返回圖片的訪問 URL。",
+				"tags": ["Images"],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"file": {
+										"type": "string",
+										"format": "binary",
+										"description": "需要上傳的圖片文件"
+									}
+								},
+								"required": ["file"]
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "圖片上傳成功",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"imgUrl": {
+											"type": "string",
+											"description": "上傳後圖片的訪問 URL"
+										}
+									}
+								},
+								"example": {
+									"imgUrl": "https://your-storage-service.com/images/example.jpg"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "圖片上傳失敗",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"status": {
+											"type": "string",
+											"example": "error"
+										},
+										"message": {
+											"type": "string",
+											"example": "上傳失敗"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }
