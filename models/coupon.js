@@ -17,12 +17,21 @@ const couponSchema = new mongoose.Schema({
 		required: true,
 		min: 0,
 	},
+	redeemCode: {
+		type: String,
+		required: true,
+		unique: true,
+	},
 	createdAt: {
 		type: Date,
 		default: Date.now,
 	},
 	expiresAt: {
 		type: Date,
+		required: true,
+	},
+	status: {
+		type: String,
 		required: true,
 	},
 })
