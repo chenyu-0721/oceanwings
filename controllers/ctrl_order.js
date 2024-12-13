@@ -1,6 +1,5 @@
 const Cart = require('../models/cart')
 const Order = require('../models/order')
-const Product = require('../models/product')
 const handleSuccess = require('../handleSuccess.js')
 const mongoose = require('mongoose')
 const handleError = require('../handleError')
@@ -15,8 +14,6 @@ exports.getUserOrder = async (req, res, next) => {
 				select: 'name imageUrl price description',
 			})
 			.sort({ createdAt: -1 })
-
-		console.log(orders)
 
 		if (!orders || orders.length === 0) {
 			return res.status(404).json({
@@ -64,8 +61,6 @@ exports.getAllOrders = async (req, res, next) => {
 		totalPages: Math.ceil(total / limit),
 		data: orders,
 	}
-
-	console.log(data)
 
 	handleSuccess(res, data)
 }

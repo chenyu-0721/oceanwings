@@ -41,7 +41,6 @@ exports.addProduct = async (req, res, next) => {
 }
 
 exports.editProduct = async (req, res, next) => {
-	console.log(req.params.id, req.body)
 	try {
 		const newpost = await Product.findByIdAndUpdate(req.params.id, req.body, {
 			new: true,
