@@ -93,10 +93,6 @@ exports.checkout = async (req, res, next) => {
 			totalPrice: cart.products.reduce((sum, item) => sum + item.productId.price * item.quantity, 0),
 		})
 
-		for (let item of cart.products) {
-			await Product.findByIdAndUpdate(item.productId._id, { $inc: { quantity: -item.quantity } }, { session })
-		}
-
 		await order.save({ session })
 
 		cart.products = []
