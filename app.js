@@ -101,3 +101,6 @@ app.listen(port, () => {
 })
 
 module.exports = app
+
+// ACCOUNT=admin@gmail.com
+// PASSOWRD=密碼：admin1234

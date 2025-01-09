@@ -2,7 +2,7 @@
 	"openapi": "3.0.0",
 	"info": {
 		"title": "OceanWings API",
-		"description": "帳號：admin@gmail.com 密碼：admin1234 role：'admin' << 系統管理員",
+		"description": "",
 		"version": "1.0.0"
 	},
 	"paths": {
